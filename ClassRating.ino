@@ -1,3 +1,7 @@
+// @TODO need to change LED matrix pins to work with ESP
+// uncomment WiFi communication code when ready
+
+
 //#include <WiFi.h>
 //#include <HTTPClient.h>
 
