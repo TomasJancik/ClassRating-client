@@ -2,8 +2,7 @@
 #include <HTTPClient.h>
 #include "LedControl.h"
 
-const char* ssid = ""; // set WiFi network SSID
-const char* password =  ""; // set Wifi password
+#include "config.h";
 
 String mac;
 
@@ -169,7 +168,7 @@ void sendRequest(String rating) {
   }
   
   HTTPClient http;
-  String url = "http://hwi.tomasjancik.net//?rating=" + rating + "&macAddr=" + mac;
+  String url = serverUrl + "?rating=" + rating + "&macAddr=" + mac;
   Serial.println(rating);
   Serial.println(url);
   http.begin(url);
@@ -180,6 +179,9 @@ void sendRequest(String rating) {
   http.addHeader("Connection", "keep-alive");
   http.addHeader("DNT", "1");
   http.addHeader("Host", "http://hwi.tomasjancik.net/");
+
+  http.setTimeout(3000);
+  
   int httpResponseCode = http.GET(); //Send the actual POST request
   if (httpResponseCode > 0) {
 
