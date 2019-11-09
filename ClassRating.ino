@@ -148,7 +148,7 @@ void setup() {
 
   animateLoading();
 
-  while (WiFi.status() != WL_CONNECTED) { //Check for the connection
+  while (WiFi.status() != WL_CONNECTED && millis() < 60000) { //Check for the connection. Max 60seconds
     delay(100);
     Serial.print(".");
     animateLoading();
@@ -157,7 +157,6 @@ void setup() {
   mac = WiFi.macAddress();
   animateLoading();
 
-  Serial.println("");
   Serial.println("Connected to the WiFi network");
   animateLoading();
 
@@ -165,6 +164,10 @@ void setup() {
 }
 
 void sendRequest(String rating) {
+  if(WiFi.status() != WL_CONNECTED) {
+    return; // do not send if not connection
+  }
+  
   HTTPClient http;
   String url = "http://hwi.tomasjancik.net//?rating=" + rating + "&macAddr=" + mac;
   Serial.println(rating);
