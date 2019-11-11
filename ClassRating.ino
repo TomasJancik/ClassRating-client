@@ -6,9 +6,7 @@
 
 String mac;
 
-bool sent = false;
-
-// nastavení propojovacích pinů
+// setup matrix pins
 #define DIN 13
 #define CS  12
 #define CLK 14
@@ -17,14 +15,13 @@ bool sent = false;
 #define btnMeh    35
 #define btnBad    34
 
-// tato proměnná údává počet matic,
-// počítání začíná od nuly
-#define mojeMat 0
+// matrix number - starts from zero
+#define matrixNum 0
 
 #define displayTimeout 30
 
 // inicializace LED matice z knihovny
-LedControl ledMat = LedControl(DIN, CLK, CS, mojeMat);
+LedControl matrix = LedControl(DIN, CLK, CS, matrixNum);
 
 byte smileHappy[8] = { B00100000,
                        B01100110,
@@ -74,13 +71,13 @@ bool debounce() {
 
 bool displayOff() {
   if ((millis() - lastMicros) > (displayTimeout * 1000)) {
-    ledMat.clearDisplay(mojeMat);
+    matrix.clearDisplay(matrixNum);
   }
 }
 
 void display(byte smile[8]) {
   for (int i = 0; i < 8; i++) {
-    ledMat.setRow(mojeMat, i, smile[i]);
+    matrix.setRow(matrixNum, i, smile[i]);
   }
 }
 
@@ -88,7 +85,7 @@ void blink(byte smile[8], int speed) {
   for (int j = 0; j < 3; j++) {
     display(smile);
     delay(speed);
-    ledMat.clearDisplay(mojeMat);
+    matrix.clearDisplay(matrixNum);
     delay(speed);
   }
 }
@@ -97,10 +94,10 @@ void animateLoading() {
   if (loadRow > 7) {
     loadRow = 0;
     loadCol = 0;
-    ledMat.clearDisplay(mojeMat);
+    matrix.clearDisplay(matrixNum);
   }
 
-  ledMat.setLed(mojeMat, loadRow, loadCol, true);
+  matrix.setLed(matrixNum, loadRow, loadCol, true);
   loadCol++;
 
   if (loadCol > 7) {
@@ -115,14 +112,14 @@ void finishAnimateLoading() {
     delay(10);
   }
 
-  ledMat.clearDisplay(mojeMat);
+  matrix.clearDisplay(matrixNum);
 }
 
 void setup() {
   // setup LED matrix
-  ledMat.shutdown(mojeMat, false);
-  ledMat.setIntensity(mojeMat, 7);
-  ledMat.clearDisplay(mojeMat);
+  matrix.shutdown(matrixNum, false);
+  matrix.setIntensity(matrixNum, 7);
+  matrix.clearDisplay(matrixNum);
   animateLoading();
 
   // set button pins
@@ -241,21 +238,8 @@ void loop() {
     Serial.println("Result:");
     Serial.println(total / btnPressed);
     Serial.println(result);
-    //    ledMat.clearDisplay(mojeMat);
+    //    matrix.clearDisplay(matrixNum);
 
-    //    if(result == 1) {
-    //      for(int i=0; i<8; i++) {
-    //        ledMat.setRow(mojeMat,i,smileHappy[i]);
-    //      }
-    //    } else if (result == 2) {
-    //      for(int i=0; i<8; i++) {
-    //        ledMat.setRow(mojeMat,i,smileMeh[i]);
-    //      }
-    //    } else if (result == 3) {
-    //      for(int i=0; i<8; i++) {
-    //        ledMat.setRow(mojeMat,i,smileBad[i]);
-    //      }
-    //    }
     refresh = false;
   }
 
