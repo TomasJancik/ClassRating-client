@@ -115,6 +115,23 @@ void finishAnimateLoading() {
   matrix.clearDisplay(matrixNum);
 }
 
+void wifiConnect() {
+  WiFi.mode(WIFI_STA);
+  int n = WiFi.scanNetworks();
+
+  for (int i = 0; i < n; ++i) {
+    String curSsid = WiFi.SSID(i);
+    animateLoading();
+    if(curSsid == ssid1) {
+      Serial.println("Connecting to " + curSsid);
+      WiFi.begin(ssid1, password1);
+    } else if(curSsid == ssid2) {
+      Serial.println("Connecting to " + curSsid);
+      WiFi.begin(ssid2, password2);
+    }
+  }
+}
+
 void setup() {
   // setup LED matrix
   matrix.shutdown(matrixNum, false);
@@ -140,7 +157,7 @@ void setup() {
   }
 
   Serial.println("Connecting to WiFi..");
-  WiFi.begin(ssid, password);
+  wifiConnect();
 
   animateLoading();
 
